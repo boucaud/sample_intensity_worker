@@ -12,4 +12,4 @@ The following arguments are passed to the entrypoint:
 * `--apiUrl`: the url to the girder API
 * `--token`: authentication token for girder
 * `--datasetId`: the id of the dataset to process
-* `--parameters`: configuration information related to the property
+* `--parameters`: json-formatted string containing configuration information related to the property
