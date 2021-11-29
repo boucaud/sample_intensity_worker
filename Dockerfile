@@ -36,4 +36,4 @@ ENV PYTHON_BIN=python3
 
 COPY ./entrypoint.py /
 
-ENTRYPOINT [ "python3", "./entrypoint.py" ]
+ENTRYPOINT [ "python3", "/entrypoint.py" ]
