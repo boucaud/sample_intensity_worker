@@ -10,9 +10,23 @@ import imageio
 
 
 def main(datasetId, apiUrl, token, params):
+    """
+    Params is a dict containing the following parameters:
+    required:
+        name: The name of the property
+        id: The id of the property
+        propertyType: can be "morphology", "relational", or "layer"
+    optional:
+        annotationId: A list of annotation ids for which the property should be computed
+        shape: The shape of annotations that should be used
+        layer: Which specific layer should be used for intensity calculations
+        tags: A list of annotation tags, used when counting for instance the number of connections to specific tagged annotations
+    """
     propertyName = params.get('customName', None)
     if not propertyName:
         propertyName = params.get('name', 'unknown_property')
+
+    annotationIds = params.get('annotationIds', None)
 
     # Setup helper classes with url and credentials
     annotationClient = annotations.UPennContrastAnnotationClient(
@@ -20,9 +34,19 @@ def main(datasetId, apiUrl, token, params):
     datasetClient = tiles.UPennContrastDataset(
         apiUrl=apiUrl, token=token, datasetId=datasetId)
 
-    # Get all point annotations from the dataset
-    annotationList = annotationClient.getAnnotationsByDatasetId(
-        datasetId, shape='point')
+    annotationList = []
+    if annotationIds:
+        # Get the annotations specified by id in the parameters
+        for id in annotationIds:
+            annotationList.append(annotationClient.getAnnotationById(id))
+    else:
+        # Get all point annotations from the dataset
+        annotationList = annotationClient.getAnnotationsByDatasetId(
+            datasetId, shape='point')
+
+    # We need at least one annotation
+    if len(annotationList) == 0:
+        return
 
     # Constants
     dim = 2
