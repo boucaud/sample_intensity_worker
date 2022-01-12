@@ -70,7 +70,7 @@ def main(datasetId, apiUrl, token, params):
 
     for annotation in annotationList:
         # Get image location
-        channel = annotation['channel']
+        channel = params.get('layer', annotation['channel']) # Default to the annotation's channel
         location = annotation['location']
         time, z, xy = location['Time'], location['Z'], location['XY']
 
