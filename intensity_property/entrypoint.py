@@ -4,10 +4,34 @@ import sys
 
 import annotation_client.annotations as annotations
 import annotation_client.tiles as tiles
+import annotation_client.workers as workers
 
 import itk
 import imageio
 
+def interface(image, apiUrl, token):
+    client = workers.UPennContrastWorkersClient(apiUrl=apiUrl, token=token)
+
+    # Available types: number, text, tags, layer
+    interface = {
+        'someNumber': {
+            'type': 'number',
+            'min': 0,
+            'max': 255,
+            'default': 50
+        },
+        'someTags': {
+            'type': 'tags'
+        },
+        'someLayer': {
+            'type': 'layer'
+        },
+        'someText': {
+            'type': 'text'
+        }
+    }
+    # Send the interface object to the server
+    client.setWorkerImageInterface(image, interface)
 
 def main(datasetId, apiUrl, token, params):
     """
@@ -22,11 +46,19 @@ def main(datasetId, apiUrl, token, params):
         layer: Which specific layer should be used for intensity calculations
         tags: A list of annotation tags, used when counting for instance the number of connections to specific tagged annotations
     """
+    # Check whether we need to preview, send the interface, or compute
+    request = params.get('request', 'compute')
+    if request == 'interface':
+        return interface(params['image'], apiUrl, token)
+
     propertyName = params.get('customName', None)
     if not propertyName:
         propertyName = params.get('name', 'unknown_property')
 
     annotationIds = params.get('annotationIds', None)
+
+    workerInterface = params.get('workerInterface')
+    print('Got interface parameters: ', workerInterface)
 
     # Setup helper classes with url and credentials
     annotationClient = annotations.UPennContrastAnnotationClient(
@@ -111,7 +143,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Compute average intensity values in a circle around point annotations')
 
-    parser.add_argument('--datasetId', type=str, required=True, action='store')
+    parser.add_argument('--datasetId', type=str, required=False, action='store')
     parser.add_argument('--apiUrl', type=str, required=True, action='store')
     parser.add_argument('--token', type=str, required=True, action='store')
     parser.add_argument('--parameters', type=str,

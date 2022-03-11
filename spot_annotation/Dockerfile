@@ -5,7 +5,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -qy tzdata 
   apt-get update && apt-get install -qy \
   build-essential \
   wget \
-  python3 \
+  python3.7 \
   r-base \
   libffi-dev \
   libssl-dev \
@@ -13,10 +13,10 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -qy tzdata 
   zlib1g-dev \
   r-base \
   git \
-  libpython3-dev && \
+  libpython3.7-dev && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
+RUN wget https://bootstrap.pypa.io/get-pip.py && python3.7 get-pip.py
 
 
 FROM base as build
@@ -24,16 +24,16 @@ FROM base as build
 # TODO: temporary repository
 RUN git clone https://github.com/Kitware/UPennContrast/
 WORKDIR /UPennContrast
-RUN git checkout annotation-browser
+RUN git checkout add-annotation-worker
 
-RUN pip install -r devops/girder/annotation_client/requirements.txt
-RUN pip install -e devops/girder/annotation_client/
+RUN pip3.7 install -r devops/girder/annotation_client/requirements.txt
+RUN pip3.7 install devops/girder/annotation_client/
 
 COPY ./requirements.txt /
-RUN pip install -r /requirements.txt
+RUN pip3.7 install -r /requirements.txt
 
-ENV PYTHON_BIN=python3
+ENV PYTHON_BIN=python3.7
 
 COPY ./entrypoint.py /
 
-ENTRYPOINT [ "python3", "/entrypoint.py" ]
+ENTRYPOINT [ "python3.7", "/entrypoint.py" ]
