@@ -31,17 +31,19 @@ def preview(datasetId, apiUrl, token, params, image):
     pngBuffer = datasetClient.getRawImage(tile['XY'], tile['Z'], tile['Time'], channel)
     pngImage = imageio.imread(pngBuffer)
 
+    (width, height) = np.shape(pngImage)
+
     # Compute the threshold indexes
     index = pngImage > thresholdValue
 
     # Convert image to RGB
-    rgb = np.stack((pngImage,) * 3, axis=-1)
+    rgba = np.zeros((width, height, 4), np.uint8)
 
     # Paint threshold areas red
-    rgb[index] = [255, 0, 0]
+    rgba[index] = [255, 0, 0, 255]
 
     # Generate an output data-uri from the threshold image
-    outputPng = imageio.imwrite('<bytes>', rgb, format='png')
+    outputPng = imageio.imwrite('<bytes>', rgba, format='png')
     data64 = base64.b64encode(outputPng)
     dataUri = 'data:image/png;base64,' + data64.decode('ascii')
 
