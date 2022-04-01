@@ -36,4 +36,6 @@ ENV PYTHON_BIN=python3.7
 
 COPY ./entrypoint.py /
 
+LABEL isUPennContrastWorker=True
+
 ENTRYPOINT [ "python3.7", "/entrypoint.py" ]
