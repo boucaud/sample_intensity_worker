@@ -7,6 +7,8 @@ Makes use of the utility client for communication with the annotation plugin. Th
 
 It is mandatory to specify an entrypoint in the Dockerfile. Anything else is optional though python is recommended for now as it allow usage of the annotation client.
 
+For images to be recognized, it is necessary to label them with isUPennContrastWorker=True. This can either be done in the Dockerfile (LABEL isUPennContrastWorker=True), or when building the image (--label)
+
 The following arguments are passed to the entrypoint:
 
 * `--apiUrl`: the url to the girder API
