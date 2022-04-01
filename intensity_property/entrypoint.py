@@ -10,7 +10,7 @@ import itk
 import imageio
 
 def interface(image, apiUrl, token):
-    client = workers.UPennContrastWorkersClient(apiUrl=apiUrl, token=token)
+    client = workers.UPennContrastWorkerPreviewClient(apiUrl=apiUrl, token=token)
 
     # Available types: number, text, tags, layer
     interface = {
