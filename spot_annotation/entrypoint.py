@@ -55,7 +55,7 @@ def preview(datasetId, apiUrl, token, params, image):
     client.setWorkerImagePreview(image, preview)
 
 def interface(image, apiUrl, token):
-    client = workers.UPennContrastWorkersClient(apiUrl=apiUrl, token=token)
+    client = workers.UPennContrastWorkerPreviewClient(apiUrl=apiUrl, token=token)
 
     # Available types: number, text, tags, layer
     interface = {
@@ -73,6 +73,10 @@ def interface(image, apiUrl, token):
         },
         'someText': {
             'type': 'text'
+        },
+        'someSelection': {
+            'type': 'select',
+            'items': ['aaaaaa', 'bbbbbb', 'ccccccc']
         }
     }
     # Send the interface object to the server
